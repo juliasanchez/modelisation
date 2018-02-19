@@ -1,0 +1,112 @@
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    ///en utilisant une image binaire
+
+//    Eigen::Vector4f min_pt;
+//    Eigen::Vector4f max_pt;
+//    pcl::getMinMax3D (*plane, min_pt, max_pt);
+//    float cols_dist = (max_pt(0)-min_pt(0));
+//    float rows_dist = (max_pt(1)-min_pt(1));
+//    float D_dist = 0.03;
+//    int N_cols = (int)(cols_dist /D_dist);
+//    int N_rows = (int)(rows_dist /D_dist);
+//    Eigen::MatrixXf image(N_rows+1,N_cols+1);
+//    image = Eigen::MatrixXf::Zero(N_rows+1,N_cols+1);
+
+//    for (int p = 0; p<plane->size(); ++p)
+//    {
+//        float diff = plane->points[p].x-min_pt(0);
+//        int col = floor(diff/D_dist);
+//        diff = plane->points[p].y-min_pt(1);
+//        int row = floor(diff/D_dist);
+
+//        if(row>N_rows || row<0 ||col>N_cols || col <0)
+//            std::cout<<row<<" "<<col<<std::endl<<std::endl;
+
+//        image(row,col) = 1;
+//    }
+
+//    save_image_pgm("image0", "", &image, 1);
+
+//    median_filter(&image, &image, 1);
+
+
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    ///en utilisant un descripteur : histogramme local sous forme de disque
+
+//    pcl::KdTreeFLANN<pcl_point>::Ptr tree (new pcl::KdTreeFLANN<pcl_point>);
+//    tree->setInputCloud(plane);
+
+//    std::vector<int> pointIdxRadiusSearch;
+//    std::vector<float> pointRadiusSquaredDistance;
+
+//    int size_hist = atoi(argv[5]);
+//    float radius = atof(argv[6]);
+
+//    pcl::PointCloud<pcl_point>::Ptr contours(new pcl::PointCloud<pcl_point>);
+//    contours->height   = 1;
+//    contours->is_dense = false;
+
+//    for (int i=0; i< plane->size(); ++i)
+//    {
+//        std::vector<int> hist(size_hist);
+//        float theta;
+//        if ( tree->radiusSearch (plane->points[i], radius, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0 )
+//        {
+////            //construction d'un histogramme pour chaque point
+//            for (int w=1; w<pointIdxRadiusSearch.size(); ++w)
+//            {
+//                int idx = pointIdxRadiusSearch[w];
+//                pcl_point pt0 = plane->points[i];
+//                pcl_point pt = plane->points[idx];
+//                float diffx = pt.x-pt0.x;
+
+//                if(diffx!=0)
+//                {
+//                    float diffy = pt.y-pt0.y;
+//                    theta = atan(diffy/diffx);
+//                    theta = theta+M_PI/2;
+//                    if(diffx < 0)
+//                        theta += M_PI;
+//                    if(theta>2*M_PI)
+//                        theta -= 2*M_PI;
+//                    float d = 2*M_PI/(float)hist.size();
+//                    hist[ (int)( theta/d ) ] = 1;
+//                }
+//            }
+//            pointIdxRadiusSearch.clear();
+//            pointRadiusSquaredDistance.clear();
+//        }
+//        int sum = 0;
+//        for (int w=0; w<hist.size(); ++w)
+//        {
+//            sum += hist[w];
+//        }
+
+//        //ranger les points dont l'histogramme n'est pas assez homogène dans le nuage "contours"
+//        if(sum<hist.size())
+//        {
+//            pcl_point pt;
+//            pt = plane->points[i];
+//            contours->points.push_back(pt);
+//        }
+//    }
+
+//    contours->width    = contours->points.size();
+//    contours->points.resize (contours->width * contours->height);
+
+//    pcl::io::savePCDFileASCII ("contours.csv", *contours);
+
+
+    // tourner l'histogramme pour vérifier le voisinage
+//    Eigen::Affine3f transform = Eigen::Affine3f::Identity();
+//    float theta = (2*M_PI/size_hist)/2;
+//    transform.rotate (Eigen::AngleAxisf (theta, Eigen::Vector3f::UnitZ()));
+//    pcl::PointCloud<pcl_point>::Ptr plane_rotated1(new pcl::PointCloud<pcl_point>);
+//    pcl::transformPointCloud (*plane, *plane_rotated1, transform);
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
