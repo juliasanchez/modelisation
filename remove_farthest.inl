@@ -1,4 +1,4 @@
-void remove_farthest(pcl::PointCloud<pcl_point>::Ptr line, float error_max, Eigen::Vector3f& dir, Eigen::Vector3f&  pt, pcl::PointCloud<pcl_point>::Ptr remaining_points_line)
+void remove_farthest(pcl::PointCloud<pcl_point>::Ptr line, float error_max, Eigen::Vector3f& dir, Eigen::Vector3f&  pt, pcl::PointCloud<pcl_point>::Ptr remaining_points_line, bool* notalign)
 {
 //    //compute average position of the line
 //    std::vector<std::pair<float, int>> dist(line->size());
@@ -99,18 +99,26 @@ void remove_farthest(pcl::PointCloud<pcl_point>::Ptr line, float error_max, Eige
 
     line->points.resize (0);
 
-    for(int k = 0; k<dist.size(); ++k)
+    if(std::max(n,p)>1)
     {
-        float bin_index = (int) (  ( dist[k]/bin_width )-1  );
-        if( (n>=p && ( bin_index<n)) || ( p>n && ( (bin_index<m+n+p) && (bin_index>m+n) ) )  )
+        for(int k = 0; k<dist.size(); ++k)
         {
-            line->points.push_back(line_temp.points[k]);
+            float bin_index = (int) (  ( dist[k]/bin_width )-1  );
+            if( (n>=p && ( bin_index<n)) || ( p>n && ( (bin_index<m+n+p) && (bin_index>m+n) ) )  )
+            {
+                line->points.push_back(line_temp.points[k]);
+            }
         }
+
+        line->width    = line->points.size();
+
+        line_detection(line, error_max, line, remaining_points_line, dir, pt, &length);
+        *notalign = 0;
     }
-
-    line->width    = line->points.size();
-
-    line_detection(line, error_max, line, remaining_points_line, dir, pt, &length);
+    else
+    {
+        *notalign = 1;
+    }
 
 
 }

@@ -142,7 +142,10 @@ int main(int argc, char *argv[])
 //                }
 
                 pcl::PointCloud<pcl_point>::Ptr remaining_points_line(new pcl::PointCloud<pcl_point>); //remaining points
-                remove_farthest(line, error_max, direction, point, remaining_points_line);
+                bool notalign;
+                remove_farthest(line, error_max, direction, point, remaining_points_line, &notalign);
+                if (notalign)
+                    break;
                 *remaining_points_boundary += *remaining_points_line;
 
                 float size2 = line->size();
